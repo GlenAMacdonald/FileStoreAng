@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { invoke } from "@tauri-apps/api/core";
+import { ShowLocalFilesComponent } from './show-local-files/show-local-files.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, ShowLocalFilesComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -15,7 +16,7 @@ export class AppComponent {
 
   greet(event: SubmitEvent, name: string): void {
     event.preventDefault();
-
+  
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
     invoke<string>("greet", { name }).then((text) => {
       this.greetingMessage = text;

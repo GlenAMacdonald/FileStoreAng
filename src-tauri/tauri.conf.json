@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "identifier": "com.tauri.dev",
   "build": {
-    "beforeDevCommand": "npm run start -- --host $HOST --public-host $HOST",
+    "beforeDevCommand": "npm run start",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist/filestore/browser"
