@@ -1,6 +1,6 @@
 export class FileInfo {
-    public path: string | null = null;
-    public fileName: string | null = null;
+    public path!: string;
+    public fileName?: string | null = null;
     public isFile: boolean | null = null;
     public isDirectory: boolean | null = null;
     // public fileType: string | null = null;
