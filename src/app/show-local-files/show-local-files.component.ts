@@ -3,12 +3,11 @@ import { invoke } from '@tauri-apps/api/core';
 import { NgFor, NgForOf, NgIf } from '@angular/common';
 import { FileInfo } from '../../domain/path/fileInfo';
 import { MatTableModule } from '@angular/material/table';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-show-local-files',
   standalone: true,
-  imports: [NgIf, NgFor, NgForOf, MatTableModule, CdkVirtualScrollViewport ],
+  imports: [NgIf, NgFor, NgForOf, MatTableModule ],
   templateUrl: './show-local-files.component.html',
   styleUrl: './show-local-files.component.css'
 })
@@ -18,52 +17,60 @@ export class ShowLocalFilesComponent implements OnInit {
   // fileInfo: FileInfo[] = [{path: '', isFile: true, isDirectory: false, fileType: '', isSymLink: false, len: 10, modified: new Date(), created: new Date(), accessed: new Date()}];
   fileInfo: FileInfo[] = [];
   rootPath = '.';
-  traversedPaths: FileInfo[] = [new FileInfo({path: this.rootPath})];
+  currentPath!: FileInfo;
+  traversedPaths: FileInfo[] = [];
 
   displayedColumns: string[] = ['path', 'isFile', 'isDirectory', 'fileType', 'isSymLink', 'len', 'modified','created','accessed'];
   // displayedColumns: string[] = ['path', 'isFile', 'isDirectory', 'fileType', 'isSymLink',];
   dataSource = this.fileInfo;
 
   ngOnInit() {
-    this.setLastPath(this.rootPath);
     this.getFileInfo(this.rootPath);
   }
 
-  // getFiles(path: string) {
-  //   invoke<string[]>("get_files", { path }).then((filesArray) => {
-  //     this.files = filesArray;
-  //   });
-  // } 
-
-  getFileInfo(path: string) {
-    invoke<any[]>("get_file_info", { path }).then((fileArray) => {
+  getFileInfo(nextPath: string) {
+    invoke<any[]>("get_file_info", { path: nextPath }).then((fileArray) => {
       this.fileInfo = fileArray.map((data) => new FileInfo(data));
-      if (path === this.traversedPaths[-1].path){
-        const lastPath = this.traversedPaths.pop();
-        if (lastPath) {this.fileInfo.unshift(lastPath)};
+      const lastPath = this.traversedPaths[this.traversedPaths?.length - 1];
+      if (nextPath !== lastPath?.path){
+        // Handle the initial search of root (lastPath won't exist, nor will current)
+        if(this.currentPath){
+          // Put the current path at the top of the new list of paths so we can go back
+          this.fileInfo.unshift(structuredClone(this.currentPath));
+          // record that we came from
+          this.traversedPaths.push(this.currentPath)
+        };
+        this.currentPath = this.makeFileInfo(nextPath);
+        // Else we are going back
       } else {
-        this.setLastPath(path);
+        // Fetch the path twice back, it will now be the new 'last Path'
+        const secondLastPath = this.traversedPaths[this.traversedPaths?.length - 2];
+        // and put the last path at the top of the list
+        if (secondLastPath){this.fileInfo.unshift(secondLastPath)};
+        // then remove the last path from the list so we can keep going back
+        this.traversedPaths.pop();
+        this.currentPath = lastPath;
       }
     });
   }
 
   getFolder(row: FileInfo){
-    if (row.isDirectory && row.path){
-      console.log(row);
+    if ((row.isDirectory && row.path) || row === this.traversedPaths[this.traversedPaths.length - 1]){
       this.getFileInfo(row.path);
     }
   }
 
-  setLastPath(path: string){
-    this.traversedPaths.push({
+  makeFileInfo(path: string): FileInfo{
+    const info: FileInfo = new FileInfo({
       path: path,
       isFile: false,
       isDirectory: true,
       isSymLink: false,
-      len: null,
-      modified: null,
-      created: null,
-      accessed: null
-    })
+      len: 0,
+      modified: 'a',
+      created: 'b',
+      accessed: 'c'
+    });
+    return info;
   }
 }

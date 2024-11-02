@@ -1,6 +1,5 @@
 export class FileInfo {
     public path!: string;
-    public fileName?: string | null = null;
     public isFile: boolean | null = null;
     public isDirectory: boolean | null = null;
     // public fileType: string | null = null;
@@ -14,10 +13,10 @@ export class FileInfo {
     constructor(data: any = null){
         if (data !== null) {
             this.path = data.path;
-            this.isFile = data.is_file;
-            this.isDirectory = data.is_dir;
+            this.isFile = data.is_file ?? data.isFile;
+            this.isDirectory = data.is_dir ?? data.isDirectory;
             // this.fileType = data.file_type;
-            this.isSymLink = data.is_symlink;
+            this.isSymLink = data.is_symlink ?? data.isSymLink;
             this.len = data.len;
             this.modified = data.modified;
             this.created = data.created;
