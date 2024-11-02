@@ -1,7 +1,7 @@
 {
   "productName": "filestore",
   "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.tauri.dev.store",
   "build": {
     "beforeDevCommand": "npm run start",
     "devUrl": "http://localhost:1420",

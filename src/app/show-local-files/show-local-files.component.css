@@ -1,0 +1,14 @@
+.table-container {
+    max-height: 400px; /* Set the height of the container */
+    position: relative;
+}
+  
+mat-header-row {
+    z-index: 999 !important; /* Increase z-index to ensure it stays on top */
+}
+
+.mat-mdc-header-cell {
+    background-color: white !important; /* Set a background color */
+    position: sticky;
+    top: 0;
+}
