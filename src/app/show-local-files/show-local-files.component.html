@@ -1,4 +1,5 @@
-<p>{{ currentPath.path }}</p>
+@if (currentPath) {<p>{{ currentPath.path }}</p>}
+@else {<p>{{rootPath}}</p>}
 <!-- <li *ngFor="let file of files">{{file}}</li> -->
 <!-- <br> -->
 <!-- <li *ngFor="let file of fileInfo">{{file.path}}</li> -->
