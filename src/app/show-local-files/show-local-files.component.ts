@@ -14,14 +14,12 @@ import { MatTableModule } from '@angular/material/table';
 export class ShowLocalFilesComponent implements OnInit {
   files: string[] = [];
   metaData: FileInfo[] = [];
-  // fileInfo: FileInfo[] = [{path: '', isFile: true, isDirectory: false, fileType: '', isSymLink: false, len: 10, modified: new Date(), created: new Date(), accessed: new Date()}];
   fileInfo: FileInfo[] = [];
   rootPath = '.';
   currentPath!: FileInfo;
   traversedPaths: FileInfo[] = [];
 
-  displayedColumns: string[] = ['path', 'isFile', 'isDirectory', 'fileType', 'isSymLink', 'len', 'modified','created','accessed'];
-  // displayedColumns: string[] = ['path', 'isFile', 'isDirectory', 'fileType', 'isSymLink',];
+  displayedColumns: string[] = ['path', 'isFile', 'isDirectory', 'isSymLink', 'len', 'modified','created','accessed'];
   dataSource = this.fileInfo;
 
   ngOnInit() {
