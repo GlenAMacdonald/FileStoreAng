@@ -25,14 +25,15 @@ export class ShowLocalFilesComponent implements OnInit {
   dataSource = this.fileInfo;
 
   ngOnInit() {
-    this.getFileInfo(this.rootPath);
+    this.getFileInfo(this.makeFileInfo(this.rootPath));
   }
 
-  getFileInfo(nextPath: string) {
-    invoke<any[]>("get_file_info", { path: nextPath }).then((fileArray) => {
+  getFileInfo(nextPath: FileInfo) {
+    const path = nextPath.path;
+    invoke<any[]>("get_file_info", { path }).then((fileArray) => {
       this.fileInfo = fileArray.map((data) => new FileInfo(data));
       const lastPath = this.traversedPaths[this.traversedPaths?.length - 1];
-      if (nextPath !== lastPath?.path){
+      if (nextPath.path !== lastPath?.path){
         // Handle the initial search of root (lastPath won't exist, nor will current)
         if(this.currentPath){
           // Put the current path at the top of the new list of paths so we can go back
@@ -40,7 +41,7 @@ export class ShowLocalFilesComponent implements OnInit {
           // record that we came from
           this.traversedPaths.push(this.currentPath)
         };
-        this.currentPath = this.makeFileInfo(nextPath);
+        this.currentPath = nextPath;
         // Else we are going back
       } else {
         // Fetch the path twice back, it will now be the new 'last Path'
@@ -55,8 +56,8 @@ export class ShowLocalFilesComponent implements OnInit {
   }
 
   getFolder(row: FileInfo){
-    if ((row.isDirectory && row.path) || row === this.traversedPaths[this.traversedPaths.length - 1]){
-      this.getFileInfo(row.path);
+    if ((row.isDirectory && row.path) || row === this.traversedPaths[this.traversedPaths?.length - 1]){
+      this.getFileInfo(row);
     }
   }
 
@@ -66,10 +67,10 @@ export class ShowLocalFilesComponent implements OnInit {
       isFile: false,
       isDirectory: true,
       isSymLink: false,
-      len: 0,
-      modified: 'a',
-      created: 'b',
-      accessed: 'c'
+      len: null,
+      modified: '',
+      created: '',
+      accessed: ''
     });
     return info;
   }
